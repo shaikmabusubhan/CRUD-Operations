@@ -1,0 +1,139 @@
+import java.sql.*;
+import java.util.Scanner;
+
+public class UserCRUDApp {
+
+    private static final String URL = "jdbc:mysql://localhost:3306/user_db";
+    private static final String USER = "your_db_user";
+    private static final String PASSWORD = "your_db_password";
+
+    private static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
+
+    // CREATE
+    private static void createUser(Connection conn, Scanner scan) throws SQLException {
+        System.out.print("Enter name: ");
+        String name = scan.nextLine().trim();
+
+        System.out.print("Enter email: ");
+        String email = scan.nextLine().trim();
+
+        String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.executeUpdate();
+            System.out.println("User created successfully.\n");
+        }
+    }
+
+    // READ
+    private static void readUsers(Connection conn) throws SQLException {
+        String sql = "SELECT id, name, email FROM users";
+        try (PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            System.out.println("\n------ Users List ------");
+            while (rs.next()) {
+                System.out.println(
+                        rs.getInt("id") + " | " +
+                        rs.getString("name") + " | " +
+                        rs.getString("email")
+                );
+            }
+            System.out.println();
+        }
+    }
+
+    // UPDATE
+    private static void updateUser(Connection conn, Scanner scan) throws SQLException {
+        System.out.print("Enter User ID to update: ");
+        int id = Integer.parseInt(scan.nextLine());
+
+        System.out.print("Enter new name: ");
+        String name = scan.nextLine().trim();
+
+        System.out.print("Enter new email: ");
+        String email = scan.nextLine().trim();
+
+        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, name);
+            stmt.setString(2, email);
+            stmt.setInt(3, id);
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("User updated successfully.\n");
+            } else {
+                System.out.println("User ID not found.\n");
+            }
+        }
+    }
+
+    // DELETE
+    private static void deleteUser(Connection conn, Scanner scan) throws SQLException {
+        System.out.print("Enter User ID to delete: ");
+        int id = Integer.parseInt(scan.nextLine());
+
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            int rows = stmt.executeUpdate();
+            if (rows > 0) {
+                System.out.println("User deleted successfully.\n");
+            } else {
+                System.out.println("User ID not found.\n");
+            }
+        }
+    }
+
+    // MAIN MENU
+    public static void main(String[] args) {
+        try (Scanner scan = new Scanner(System.in);
+             Connection conn = getConnection()) {
+
+            while (true) {
+                System.out.println("===== USER CRUD MENU =====");
+                System.out.println("1. Create User");
+                System.out.println("2. View All Users");
+                System.out.println("3. Update User");
+                System.out.println("4. Delete User");
+                System.out.println("5. Exit");
+                System.out.print("Choose an option: ");
+
+                String choice = scan.nextLine();
+
+                switch (choice) {
+                    case "1":
+                        createUser(conn, scan);
+                        break;
+
+                    case "2":
+                        readUsers(conn);
+                        break;
+
+                    case "3":
+                        updateUser(conn, scan);
+                        break;
+
+                    case "4":
+                        deleteUser(conn, scan);
+                        break;
+
+                    case "5":
+                        System.out.println("Exiting...");
+                        return;
+
+                    default:
+                        System.out.println("Invalid option. Try again.\n");
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Database Error: " + e.getMessage());
+        }
+    }
+}
