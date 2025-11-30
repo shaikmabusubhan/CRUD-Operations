@@ -11,7 +11,7 @@ public class UserCRUDApp {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    // CREATE
+    
     private static void createUser(Connection conn, Scanner scan) throws SQLException {
         System.out.print("Enter name: ");
         String name = scan.nextLine().trim();
@@ -28,7 +28,7 @@ public class UserCRUDApp {
         }
     }
 
-    // READ
+    
     private static void readUsers(Connection conn) throws SQLException {
         String sql = "SELECT id, name, email FROM users";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
@@ -72,7 +72,7 @@ public class UserCRUDApp {
         }
     }
 
-    // DELETE
+    
     private static void deleteUser(Connection conn, Scanner scan) throws SQLException {
         System.out.print("Enter User ID to delete: ");
         int id = Integer.parseInt(scan.nextLine());
@@ -90,7 +90,7 @@ public class UserCRUDApp {
         }
     }
 
-    // MAIN MENU
+    
     public static void main(String[] args) {
         try (Scanner scan = new Scanner(System.in);
              Connection conn = getConnection()) {
