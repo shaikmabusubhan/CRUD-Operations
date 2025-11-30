@@ -46,7 +46,7 @@ public class UserCRUDApp {
         }
     }
 
-    // UPDATE
+    
     private static void updateUser(Connection conn, Scanner scan) throws SQLException {
         System.out.print("Enter User ID to update: ");
         int id = Integer.parseInt(scan.nextLine());
