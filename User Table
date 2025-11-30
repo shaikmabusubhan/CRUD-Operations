@@ -1,10 +1,10 @@
 import java.sql.*;
 import java.util.Scanner;
 
-public class UserCRUDApp {
+public class my_crud {
 
     private static final String URL = "jdbc:mysql://localhost:3306/user_db";
-    private static final String USER = "user_db";
+    private static final String USER = "eoot";
     private static final String PASSWORD = "Subhani786@";
 
     private static Connection getConnection() throws SQLException {
